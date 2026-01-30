@@ -3,318 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Scream Challenge 😱</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>The Screaming Challenge 🗣️</title>
     <style>
         body {
-            font-family: 'Orbitron', sans-serif;
-            background-color: #050505;
-            color: #fff;
+            font-family: 'Arial', sans-serif;
+            background-color: #2c3e50;
+            color: white;
             text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            color: #0ff;
-            text-shadow: 0 0 10px #0ff;
-            margin-top: 40px;
-            margin-bottom: 10px;
-        }
-
-        .container {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
             justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        h1 { font-size: 3rem; margin-bottom: 10px; }
+        p { font-size: 1.2rem; color: #ecf0f1; }
+
+        #game-container {
+            width: 300px;
+            height: 400px;
+            border-bottom: 5px solid white;
+            position: relative;
             margin-top: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
         }
 
-        .meter-box {
-            background: #111;
-            border: 2px solid #333;
-            border-radius: 15px;
-            padding: 20px;
-            width: 200px;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+        #character {
+            width: 50px;
+            height: 50px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: bottom 0.1s ease-out;
+            box-shadow: 0 0 15px #e74c3c;
         }
 
-        .label { font-size: 0.8rem; color: #aaa; margin-bottom: 5px; letter-spacing: 2px; }
-        .value { font-size: 3rem; font-weight: 900; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
-
-        /* Dynamic Colors */
-        .low { color: #0f0; text-shadow: 0 0 10px #0f0; }
-        .med { color: #ff0; text-shadow: 0 0 10px #ff0; }
-        .high { color: #f00; text-shadow: 0 0 20px #f00; }
-
-        #max-score {
-            margin-top: 30px;
-            padding: 10px 20px;
-            border: 1px solid #f0f;
-            border-radius: 5px;
-            color: #f0f;
-            font-size: 1rem;
-            background: rgba(255, 0, 255, 0.05);
-            box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        #meter-container {
+            width: 300px;
+            height: 20px;
+            background-color: #34495e;
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
         }
 
-        /* BUTTONS */
-        .btn-group { margin-top: 30px; display: flex; gap: 15px; }
+        #meter-fill {
+            height: 100%;
+            width: 0%;
+            background-color: #2ecc71;
+            transition: width 0.1s;
+        }
 
         button {
             padding: 15px 30px;
             font-size: 1.2rem;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: bold;
+            background-color: #3498db;
+            color: white;
             border: none;
-            border-radius: 50px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: 0.2s;
-            text-transform: uppercase;
+            margin-top: 20px;
         }
 
-        #startBtn { background: #0ff; color: #000; box-shadow: 0 0 20px #0ff; }
-        #startBtn:hover { background: #fff; transform: scale(1.05); }
+        button:hover { background-color: #2980b9; }
 
-        #stopBtn { background: #f00; color: #fff; box-shadow: 0 0 20px #f00; }
-
-        #saveBtn { background: #0f0; color: #000; box-shadow: 0 0 15px #0f0; }
-        #retryBtn { background: #333; color: #fff; border: 1px solid #fff; }
-
-        /* LEADERBOARD */
-        #leaderboard {
-            margin-top: 60px;
-            width: 90%;
-            max-width: 600px;
-            background: #0a0a0a;
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #333;
-        }
-
-        .tabs { display: flex; border-bottom: 2px solid #333; margin-bottom: 10px; }
-        .tab {
-            flex: 1;
-            padding: 10px;
-            cursor: pointer;
-            color: #888;
-            background: none;
-            border: none;
-            border-radius: 0;
-            font-size: 1rem;
-        }
-        .tab.active { color: #0ff; border-bottom: 3px solid #0ff; background: rgba(0, 255, 255, 0.05); }
-        .tab:hover { color: #fff; }
-
-        #scoreList { list-style: none; padding: 0; margin: 0; }
-
-        #scoreList li {
-            padding: 12px;
-            border-bottom: 1px solid #222;
-            display: flex;
-            justify-content: space-between;
-            font-size: 1.1rem;
-        }
-
-        #scoreList li:nth-child(1) { color: #ffd700; text-shadow: 0 0 10px #ffd700; } /* Gold */
-        #scoreList li:nth-child(2) { color: #c0c0c0; } /* Silver */
-        #scoreList li:nth-child(3) { color: #cd7f32; } /* Bronze */
-
-        .sub-stat { font-size: 0.8rem; color: #555; margin-left: 10px; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <h1>Global Scream Challenge</h1>
-    <p style="color: #666;">Make noise. Break records.</p>
+    <h1>🗣️ Screaming Challenge</h1>
+    <p>The louder you scream, the higher it jumps!</p>
 
-    <div class="container">
-        <div class="meter-box">
-            <div class="label">LOUDNESS</div>
-            <div id="db-meter" class="value low">0 dB</div>
-        </div>
+    <button id="start-btn" onclick="startListening()">Click to Enable Microphone</button>
 
-        <div class="meter-box">
-            <div class="label">PITCH</div>
-            <div id="hz-meter" class="value low">0 Hz</div>
-        </div>
+    <div id="meter-container" class="hidden">
+        <div id="meter-fill"></div>
     </div>
 
-    <div id="max-score">Max: 0 dB | Max Pitch: 0 Hz</div>
-
-    <div class="btn-group">
-        <button id="startBtn" onclick="startScreaming()">START RECORDING</button>
-        <button id="stopBtn" onclick="stopScreaming()" style="display:none;">STOP</button>
-
-        <button id="saveBtn" onclick="saveData()" style="display:none;">SAVE SCORE</button>
-        <button id="retryBtn" onclick="resetGame()" style="display:none;">TRY AGAIN</button>
-    </div>
-
-    <div id="leaderboard">
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('loud')" id="tab-loud">LOUDEST MODE</button>
-            <button class="tab" onclick="switchTab('pitch')" id="tab-pitch">PITCH MODE</button>
-        </div>
-        <ul id="scoreList">Loading...</ul>
+    <div id="game-container" class="hidden">
+        <div id="character"></div>
     </div>
 
     <script>
-        let audioContext, microphone, analyser, javascriptNode;
-        let maxDb = 0;
-        let maxHz = 0;
-        let isRunning = false;
-        let currentScores = []; // Store raw data here
+        let audioContext;
+        let analyser;
+        let microphone;
+        let javascriptNode;
 
-        async function startScreaming() {
+        async function startListening() {
             try {
-                // UI Reset
-                document.getElementById('startBtn').style.display = 'none';
-                document.getElementById('saveBtn').style.display = 'none';
-                document.getElementById('retryBtn').style.display = 'none';
-                document.getElementById('stopBtn').style.display = 'inline-block';
-
-                // Audio Init
+                // 1. Ask for Microphone Permission
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+
+                // 2. Setup Audio Context (The "Engine")
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                microphone = audioContext.createMediaStreamSource(stream);
                 analyser = audioContext.createAnalyser();
+                microphone = audioContext.createMediaStreamSource(stream);
                 javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
 
-                analyser.smoothingTimeConstant = 0.2;
-                analyser.fftSize = 2048;
-
+                // 3. Connect the dots
+                analyser.smoothingTimeConstant = 0.8;
+                analyser.fftSize = 1024;
                 microphone.connect(analyser);
                 analyser.connect(javascriptNode);
                 javascriptNode.connect(audioContext.destination);
 
-                isRunning = true;
+                // 4. Hide button, show game
+                document.getElementById('start-btn').style.display = 'none';
+                document.getElementById('meter-container').classList.remove('hidden');
+                document.getElementById('game-container').classList.remove('hidden');
 
+                // 5. The Loop (Runs constantly to check volume)
                 javascriptNode.onaudioprocess = function() {
-                    if(!isRunning) return;
+                    const array = new Uint8Array(analyser.frequencyBinCount);
+                    analyser.getByteFrequencyData(array);
 
-                    const timeArray = new Uint8Array(analyser.frequencyBinCount);
-                    analyser.getByteTimeDomainData(timeArray);
-                    const freqArray = new Uint8Array(analyser.frequencyBinCount);
-                    analyser.getByteFrequencyData(freqArray);
-
-                    // 1. Volume
                     let values = 0;
-                    for (let i = 0; i < freqArray.length; i++) { values += freqArray[i]; }
-                    let average = values / freqArray.length;
-                    let db = Math.round((average / 255) * 150);
-
-                    // 2. Pitch (Zero Crossing)
-                    let zeroCrossings = 0;
-                    for (let i = 1; i < timeArray.length; i++) {
-                        if ((timeArray[i-1] < 128 && timeArray[i] >= 128) || (timeArray[i-1] >= 128 && timeArray[i] < 128)) {
-                            zeroCrossings++;
-                        }
+                    const length = array.length;
+                    for (let i = 0; i < length; i++) {
+                        values += array[i];
                     }
-                    let hz = Math.round((zeroCrossings / 2) * (audioContext.sampleRate / timeArray.length));
 
-                    // 3. UI Updates
-                    const dbEl = document.getElementById('db-meter');
-                    const hzEl = document.getElementById('hz-meter');
-                    dbEl.innerText = db + " dB";
-                    hzEl.innerText = hz + " Hz";
-                    dbEl.className = "value " + (db > 100 ? "high" : (db > 60 ? "med" : "low"));
-                    hzEl.className = "value " + (hz > 1000 ? "high" : (hz > 400 ? "med" : "low"));
+                    const average = values / length;
 
-                    // 4. Max Logic
-                    if (db > maxDb) { maxDb = db; updateMaxDisplay(); }
-                    if (hz > maxHz && hz > 50) { maxHz = hz; updateMaxDisplay(); }
+                    // Update the Visuals
+                    updateGame(average);
                 }
+
             } catch (err) {
-                alert("Microphone access denied!");
+                alert("Error accessing microphone: " + err);
             }
         }
 
-        function stopScreaming() {
-            isRunning = false;
-            // Stop Audio Context to free resources
-            if(audioContext) audioContext.close();
+        function updateGame(volume) {
+            // Update the green bar
+            const meter = document.getElementById('meter-fill');
+            // Multiply by 2 to make it more sensitive
+            let visualVolume = Math.min(volume * 2, 100);
+            meter.style.width = visualVolume + "%";
 
-            // Show Action Buttons
-            document.getElementById('stopBtn').style.display = 'none';
-            document.getElementById('saveBtn').style.display = 'inline-block';
-            document.getElementById('retryBtn').style.display = 'inline-block';
+            // Update color based on loudness
+            if (visualVolume > 80) meter.style.backgroundColor = "#e74c3c"; // Red for loud
+            else meter.style.backgroundColor = "#2ecc71"; // Green for quiet
+
+            // Move the Character (Jump)
+            const character = document.getElementById('character');
+            // Map volume (0-100) to height (0-350px)
+            const jumpHeight = Math.min(volume * 4, 350);
+            character.style.bottom = jumpHeight + "px";
         }
-
-        function resetGame() {
-            maxDb = 0;
-            maxHz = 0;
-            updateMaxDisplay();
-            document.getElementById('db-meter').innerText = "0 dB";
-            document.getElementById('hz-meter').innerText = "0 Hz";
-
-            document.getElementById('saveBtn').style.display = 'none';
-            document.getElementById('retryBtn').style.display = 'none';
-            document.getElementById('startBtn').style.display = 'inline-block';
-        }
-
-        function saveData() {
-            let name = prompt(`SCORE: ${maxDb} dB / ${maxHz} Hz\nEnter your name:`);
-            if(name) {
-                fetch('/api/record_score', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ name: name, score: maxDb, pitch: maxHz })
-                }).then(() => {
-                    location.reload();
-                });
-            }
-        }
-
-        function updateMaxDisplay() {
-            document.getElementById('max-score').innerText = `Max: ${maxDb} dB | Max Pitch: ${maxHz} Hz`;
-        }
-
-        // --- LEADERBOARD LOGIC ---
-
-        function switchTab(mode) {
-            // Update Active Tab UI
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('tab-' + mode).classList.add('active');
-
-            renderList(mode);
-        }
-
-        function renderList(mode) {
-            const list = document.getElementById('scoreList');
-            list.innerHTML = "";
-
-            // Sort Data
-            let sortedData = [...currentScores];
-            if (mode === 'loud') {
-                sortedData.sort((a, b) => b.score - a.score); // Descending Loudness
-            } else {
-                sortedData.sort((a, b) => b.pitch - a.pitch); // Descending Pitch
-            }
-
-            // Show Top 10
-            sortedData.slice(0, 10).forEach(entry => {
-                const li = document.createElement('li');
-                if (mode === 'loud') {
-                    li.innerHTML = `<span>${entry.name}</span> <span>${entry.score} dB <span class="sub-stat">(${entry.pitch} Hz)</span></span>`;
-                } else {
-                    li.innerHTML = `<span>${entry.name}</span> <span>${entry.pitch} Hz <span class="sub-stat">(${entry.score} dB)</span></span>`;
-                }
-                list.appendChild(li);
-            });
-        }
-
-        // Initial Load
-        fetch('/api/get_leaderboard')
-            .then(res => res.json())
-            .then(data => {
-                currentScores = data;
-                switchTab('loud'); // Default to Loudest
-            });
-
     </script>
 </body>
 </html>
